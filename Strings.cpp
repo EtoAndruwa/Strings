@@ -1,32 +1,32 @@
 #include <stdio.h>
 
-void puts_my(const char *str);
-int strlen_null_my(const char *str);
-int strlen_no_null_my(const char *str);
-const char *strchr_my(const char *str, char chr);
-char *strcpy_my(char *dest, int dest_length, const char *src);
-void strncpy_my(char *dest, int dest_length, int count, const char *src);
-char *str_cat(char *dest, const char *src, int max_length);
+void puts_my(const char* str);
+int strlen_null_my(const char* str);
+int strlen_no_null_my(const char* str);
+const char* strchr_my(const char* str, char chr);
+char* strcpy_my(char* dest, int dest_length, const char* src);
+void strncpy_my(char* dest, int dest_length, int count, const char* src);
+char* strcat_my(char* dest, const char *src, int max_length);
 
 int main()
 {
     char string[15] = "Hello World";
     char copy[18] = "Hi";
 
-    printf("%s\n", str_cat(copy, string, sizeof(copy)));
-    printf("%p\n", str_cat(copy, string, sizeof(copy)));
+    printf("%s\n", strcat_my(copy, string, sizeof(copy)));
+    printf("%p\n", strcat_my(copy, string, sizeof(copy)));
 
 
     return 0;
 }
 
-void puts_my(const char *str) // DONE
+void puts_my(const char* str)// DONE
 {
-    int lenght = strlen_null_my(str);
+    size_t lenght = strlen_null_my(str);
 
     if (lenght != 0)
     {
-        for (int i = 0; i < lenght; i++)
+        for (size_t i = 0; i < lenght; i++)
         {
             putchar(str[i]);
         }
@@ -34,9 +34,9 @@ void puts_my(const char *str) // DONE
     }
 }
 
-int strlen_null_my(const char * str) // with \0 DONE
+int strlen_null_my(const char* str)// with \0 DONE
 {
-    int i = 0;
+    size_t i = 0;
     while (str[i] != '\0')
     {
         i++;
@@ -45,9 +45,9 @@ int strlen_null_my(const char * str) // with \0 DONE
     return i;
 }
 
-int strlen_no_null_my(const char *str) // without \0 DONE
+int strlen_no_null_my(const char* str) // without \0 DONE
 {
-    int i = 0;
+    size_t i = 0;
     while (str[i] != '\0')
     {
         i++;
@@ -55,10 +55,10 @@ int strlen_no_null_my(const char *str) // without \0 DONE
     return i;
 }
 
-const char * strchr_my(const char *str, char chr) // DONE
+const char* strchr_my(const char* str, char chr) // DONE
 {
-    int i = 0;
-    const char *chr_ptr = nullptr;
+    size_t i = 0;
+    const char* chr_ptr = nullptr;
     while (str[i] != '\0')
     {
         if (str[i] == chr)
@@ -78,14 +78,14 @@ const char * strchr_my(const char *str, char chr) // DONE
     // printf("ASCII code: %d\n", *chr_ptr);
 }
 
-char * strcpy_my(char *dest, int dest_length, const char *src) // DONE
+char* strcpy_my(char* dest, size_t dest_length, const char* src) // DONE
 {
-    int leght_scr = strlen_null_my(src);
+    size_t leght_scr = strlen_null_my(src);
     if (dest_length >= leght_scr)
     {
         // printf("Source string: %s\n", src);
         // printf("String before: %s\n", dest);
-        for (int i = 0; i <= leght_scr; i++)
+        for (size_t i = 0; i <= leght_scr; i++)
         {
             dest[i] = src[i];
         }
@@ -98,11 +98,11 @@ char * strcpy_my(char *dest, int dest_length, const char *src) // DONE
     }
 }
 
-void strncpy_my(char *dest, int dest_length, const char *src)
+void strncpy_my(char* dest, size_t dest_length, const char* src)
 {
     if (dest_length >= strlen_null_my(src))
     {
-        for (int i = 0; i < strlen_null_my(src); i++)
+        for (size_t i = 0; i < strlen_null_my(src); i++)
         {
             dest[i] = src[i];
         }
@@ -112,19 +112,19 @@ void strncpy_my(char *dest, int dest_length, const char *src)
     }
     else
     {
-        printf("NOT");
+        printf("String scr cannot be copied to the string dest (not enough space)");
     }
 }
 
-char * str_cat(char * dest, const char *src, int max_length)//DONE
+char* strcat_my(char* dest, const char* src, size_t max_length)//DONE
 {
-    int position_to_write = strlen_null_my(dest) - 1 ;
-    printf("Max length of text = %d\n", max_length);
-    printf("Position to write = %d\n", position_to_write);
+    size_t position_to_write = strlen_null_my(dest) - 1;
+    //printf("Max length of text = %d\n", max_length);
+    //printf("Position to write = %d\n", position_to_write);
 
     if(max_length >= (strlen_null_my(src) + strlen_null_my(dest)))
     {   
-        for(int i = 0; i < strlen_null_my(src); i++)
+        for(size_t i = 0; i < strlen_null_my(src); i++)
         {
             dest[position_to_write] = src[i];
             position_to_write++;   
@@ -135,5 +135,10 @@ char * str_cat(char * dest, const char *src, int max_length)//DONE
     {
         return dest; 
     }
+}
+
+char* strncat_my( char* dest, const char* src, size_t count)
+{
+    size_t position_to_write = strlen_null_my(dest) - 1;
 }
 

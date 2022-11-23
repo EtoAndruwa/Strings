@@ -97,13 +97,10 @@ char* strcpy_my(char* dest, size_t dest_length, const char* src) // DONE
     size_t leght_scr = strlen_null_my(src);
     if (dest_length >= leght_scr)
     {
-        // printf("Source string: %s\n", src);
-        // printf("String before: %s\n", dest);
         for (size_t i = 0; i <= leght_scr; i++)
         {
             dest[i] = src[i];
         }
-        // printf("String after: %s\n", dest);
         return dest;
     }
     else
@@ -138,7 +135,7 @@ char* strcat_my(char* dest, const char* src, size_t max_length) // returns the p
             dest[position_to_write] = src[i];
             position_to_write++;   
         }
-        dest[position_to_write++] = '\n';
+        dest[position_to_write++] = '\0';
         return dest;
     }
     else

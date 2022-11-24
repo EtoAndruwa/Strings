@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 void puts_my(const char* str); // prints the string with the charecter '\n' in the end of the string.
 
@@ -24,6 +25,11 @@ char* strncat_my(char* dest, const char* src, size_t count); // returns the poin
 
 char* fgets_my(char* buffer, size_t count, FILE* stream); // reads the data from the file and writes to the output string
 
+char* strdup_my(const char* str1); // dynamically allocates memory for the string and makes the identical copy of it, returns the pointer 
+
+size_t getline_my(char* lineptr, size_t* n, FILE* stream); // getline() reads an entire line from stream, storing the address
+                                                           // of the buffer containing the text into *lineptr.
+
 int main()
 {
     char string[15] = "Hello World";
@@ -41,19 +47,32 @@ int main()
     rewind(test_file);
     char* test_string = fgets_my(buffer, sizeof(buffer), test_file);
 
-    printf("Result of fgets: %s\n", test_string);
+    printf("\nResult of fgets: %s \n", test_string);
     printf("Result of puts(copy): ");
     puts_my(copy);
-    printf("Length without 0: %ld\n", strlen_no_null_my(copy));
-    printf("Length with 0: %ld\n", strlen_null_my(copy));
-    printf("Character found: %c\n", *strchr_my(copy, 'H'));
-    printf("New string 'copy': %s\n", strcpy_my(copy, sizeof(copy), string));
-    printf("Result of strcat(text1, text2): %s\n", strcat_my(text1, text2, sizeof(text1)));
-    printf("Result of strncat(text3, text4): %s\n", strncat_my(text3, text4, 5));
-    printf("Result of strncopy(text5, text6): %s\n", strncpy_my(text5, text6, 6));
+    printf("\n");
+    printf("Length without 0: %ld\n\n", strlen_no_null_my(copy));
+    printf("Length with 0: %ld\n\n", strlen_null_my(copy));
+    printf("Character found: %c\n\n", *strchr_my(copy, 'H'));
+    printf("New string 'copy': %s\n\n", strcpy_my(copy, sizeof(copy), string));
+    printf("Result of strcat(text1, text2): %s\n\n", strcat_my(text1, text2, sizeof(text1)));
+    printf("Result of strncat(text3, text4): %s\n\n", strncat_my(text3, text4, 5));
+    printf("Result of strncopy(text5, text6): %s\n\n", strncpy_my(text5, text6, 6));
 
+    char* str_dup_string = strdup_my(text2);
+    printf("Result of strdup_my(text2): %s\n", str_dup_string);
+    printf("Address of text2: %p\n", text2);
+    printf("Address of strdup_my(text2): %p\n\n", str_dup_string);
+    free(str_dup_string);
+
+    rewind(test_file);
+
+    size_t n = 10;
+    char * test10 = (char*)calloc(n, sizeof(char));    
+    printf("Number of chars read by getline_my: %ld\n", getline_my(test10, &n, test_file));
+
+    free(test10);
     fclose(test_file);
-    remove("test_file.txt");
     return 0;
 }
 
@@ -220,5 +239,129 @@ char* fgets_my(char* buffer, size_t count, FILE* stream) // reads the data from 
     else
     {
         return str;
+    }
+}
+
+char* strdup_my(const char* str1) // dynamically allocates memory for the string and makes the identical copy of it, returns the pointer 
+{
+    size_t length_of_str1 = strlen_null_my(str1);
+    char* str2 = (char*)calloc(length_of_str1, sizeof(char));
+    
+    for(size_t i = 0; i < length_of_str1; i++)
+    {
+        str2[i] = str1[i];
+    }
+
+    return str2;
+}
+
+size_t getline_my(char* lineptr, size_t* n, FILE* stream) // getline() reads an entire line from stream, storing the address
+{                                                          // of the buffer containing the text into *lineptr.   
+    if(lineptr == nullptr)
+    {   
+        rewind(stream);
+        size_t number_of_char_read = 0;
+        size_t control = 0;
+        while(control == 0) 
+        {   
+            char char_read = (char)fgetc(stream);        
+            if(char_read == '\n')
+            {
+                number_of_char_read++;
+                control = 1;
+                break;
+            }
+            else if(char_read == EOF)
+            {
+                control = 1;
+                break;
+            }
+            else
+            {
+                number_of_char_read++;
+            }
+        }
+        rewind(stream);
+        char* lineptr_new = (char*)calloc(number_of_char_read + 1, sizeof(char));
+
+        for(size_t i = 0; i < number_of_char_read; i++)
+        {
+            lineptr_new[i] = (char)getc(stream);
+        }
+        rewind(stream);
+        lineptr_new[number_of_char_read] = '\0';
+
+        // printf("Sizeof buffer: %ld\n", sizeof(lineptr_new));
+        // printf("String: %s\n", lineptr_new);
+        // printf("Length of string: %ld\n", strlen_null_my(lineptr_new));
+
+        lineptr = lineptr_new;
+        return number_of_char_read;
+    }
+    else if(lineptr != nullptr)
+    {   
+
+        rewind(stream);
+        size_t number_of_char_read = 0;
+        size_t size_buffer = *n;
+
+        size_t control = 0;
+        while(control == 0) 
+        {   
+            char char_read = (char)fgetc(stream);        
+            if(char_read == '\n')
+            {
+                number_of_char_read++;
+                control = 1;
+                break;
+            }
+            else if(char_read == EOF)
+            {
+                control = 1;
+                break;
+            }
+            else
+            {
+                number_of_char_read++;
+            }
+        }
+        rewind(stream);
+
+        if(size_buffer >=number_of_char_read + 1)
+        {   
+            // printf("BUFFER OK\n");
+            for(size_t i = 0; i < number_of_char_read; i++)
+            {
+                lineptr[i] = (char)getc(stream);
+            }
+            rewind(stream);
+            lineptr[number_of_char_read] = '\0';
+
+            // printf("String: %s\n", lineptr);
+            // printf("Length of string: %ld\n", strlen_null_my(lineptr));
+
+            return  number_of_char_read;
+        }
+        else
+        {   
+            // printf("REALOC\n");
+            lineptr = (char*)realloc(lineptr, (size_buffer + number_of_char_read + 1) * sizeof(char));
+
+            for(size_t i = 0; i < number_of_char_read; i++)
+            {
+                lineptr[i] = (char)getc(stream);
+            }
+            rewind(stream);
+            lineptr[number_of_char_read] = '\0';
+
+            // printf("String: %s\n", lineptr);
+            // printf("Length of string: %ld\n", strlen_null_my(lineptr));
+
+            return  number_of_char_read;
+        }
+    }
+    else
+    {
+        return -1;
     }
 }

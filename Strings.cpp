@@ -22,6 +22,8 @@ char* strcat_my(char* dest, const char* src, size_t size_of_dest); // (modified 
 char* strncat_my(char* dest, const char* src, size_t count); // returns the pointer to the string dest, copies the entered 
                                                              // number of characters from the string scr to the string dest.
 
+char* fgets_my(char* buffer, size_t count, FILE* stream); // reads the data from the file and writes to the output string
+
 int main()
 {
     char string[15] = "Hello World";
@@ -32,7 +34,14 @@ int main()
     char text4[15] = " Mir! Yra!";
     char text5[12] = "Home";
     char text6[15] = "Works";
+    char buffer[50] = "";
     
+    FILE* test_file = fopen("test_file.txt", "a+b");
+    fputs("Alan Turing\n", test_file);
+    rewind(test_file);
+    char* test_string = fgets_my(buffer, sizeof(buffer), test_file);
+
+    printf("Result of fgets: %s\n", test_string);
     printf("Result of puts(copy): ");
     puts_my(copy);
     printf("Length without 0: %ld\n", strlen_no_null_my(copy));
@@ -43,7 +52,8 @@ int main()
     printf("Result of strncat(text3, text4): %s\n", strncat_my(text3, text4, 5));
     printf("Result of strncopy(text5, text6): %s\n", strncpy_my(text5, text6, 6));
 
-
+    fclose(test_file);
+    remove("test_file.txt");
     return 0;
 }
 
@@ -188,9 +198,27 @@ char* strncat_my( char* dest, const char* src, size_t count) // returns the poin
         dest[position_to_write] = src[i];
         position_to_write++;
     }
-    position_to_write++;
+    position_to_write++;    
     dest[position_to_write] = '\0';
 
     return dest;
 }
 
+char* fgets_my(char* buffer, size_t count, FILE* stream) // reads the data from the file and writes to the output string
+{   
+    char* str = nullptr;
+    if(stream != nullptr)
+    {
+        for(size_t i = 0; i < count; i++)
+        {
+            buffer[i] = (char)fgetc(stream);
+        }
+        buffer[count] = '\0';
+        str = buffer;
+        return str;
+    }
+    else
+    {
+        return str;
+    }
+}

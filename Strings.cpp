@@ -264,8 +264,8 @@ size_t getline_my(char* lineptr, size_t* n, FILE* stream) // getline() reads an 
         size_t control = 0;
         while(control == 0) 
         {   
-            char char_read = (char)fgetc(stream);        
-            if(char_read == '\n')
+            int char_read = fgetc(stream); 
+            if((char)char_read == '\n')
             {
                 number_of_char_read++;
                 control = 1;
@@ -308,8 +308,8 @@ size_t getline_my(char* lineptr, size_t* n, FILE* stream) // getline() reads an 
         size_t control = 0;
         while(control == 0) 
         {   
-            char char_read = (char)fgetc(stream);        
-            if(char_read == '\n')
+            int char_read = fgetc(stream);        
+            if((char)char_read == '\n')
             {
                 number_of_char_read++;
                 control = 1;
